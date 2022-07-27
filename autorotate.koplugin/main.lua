@@ -16,7 +16,7 @@ local AutoRotate = WidgetContainer:new{
 
 function AutoRotate:onPageUpdate(page)
   local page_size = self.ui.document:getNativePageDimensions(page)
-  rot = Device.screen:getRotationMode()
+  -- rot = Device.screen:getRotationMode()
   if (page_size.w > page_size.h) then
     UIManager:broadcastEvent(Event:new("SetRotationMode", Screen.ORIENTATION_LANDSCAPE))
   else
