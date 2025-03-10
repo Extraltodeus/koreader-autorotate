@@ -15,16 +15,23 @@ local AutoRotate = WidgetContainer:new{
     name = "AutoRotate",
 }
 
+last_portrait = Screen.DEVICE_ROTATED_UPRIGHT
+
 function AutoRotate:onPageUpdate(page)
   local page_size = self.ui.document:getNativePageDimensions(page)
   rotation = Screen:getRotationMode()
+  
+  if (rotation == Screen.DEVICE_ROTATED_UPRIGHT or rotation == Screen.DEVICE_ROTATED_UPSIDE_DOWN) then
+	last_portrait = rotation
+	logger.dbg("[AutoRotate] Rotating updating last portrait rotation")
+  end
 
   if (page_size.w > page_size.h and rotation ~= Screen.DEVICE_ROTATED_CLOCKWISE) then
     logger.dbg("[AutoRotate] Rotating clockwise")
     UIManager:broadcastEvent(Event:new("SetRotationMode", Screen.DEVICE_ROTATED_CLOCKWISE))
-  elseif (page_size.h > page_size.w and rotation ~= Screen.DEVICE_ROTATED_UPRIGHT) then
+  elseif (page_size.h > page_size.w and (rotation ~= Screen.DEVICE_ROTATED_UPRIGHT or rotation ~= Screen.DEVICE_ROTATED_UPSIDE_DOWN)) then
     logger.dbg("[AutoRotate] Rotating upright")
-    UIManager:broadcastEvent(Event:new("SetRotationMode", Screen.DEVICE_ROTATED_UPRIGHT))
+    UIManager:broadcastEvent(Event:new("SetRotationMode", last_portrait))
   else
     -- logger.dbg("[AutoRotate] Not doing anything")
   end
