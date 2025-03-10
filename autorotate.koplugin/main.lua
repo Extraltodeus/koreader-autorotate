@@ -26,9 +26,13 @@ function AutoRotate:onPageUpdate(page)
 	logger.dbg("[AutoRotate] Rotating updating last portrait rotation")
   end
 
-  if (page_size.w > page_size.h and rotation ~= Screen.DEVICE_ROTATED_CLOCKWISE) then
+  if (page_size.w > page_size.h and (rotation ~= Screen.DEVICE_ROTATED_CLOCKWISE or rotation ~= Screen.DEVICE_ROTATED_COUNTER_CLOCKWISE)) then
     logger.dbg("[AutoRotate] Rotating clockwise")
-    UIManager:broadcastEvent(Event:new("SetRotationMode", Screen.DEVICE_ROTATED_CLOCKWISE))
+	if (last_portrait == Screen.DEVICE_ROTATED_UPRIGHT) then
+          UIManager:broadcastEvent(Event:new("SetRotationMode", Screen.DEVICE_ROTATED_CLOCKWISE))
+	else
+	  UIManager:broadcastEvent(Event:new("SetRotationMode", Screen.DEVICE_ROTATED_COUNTER_CLOCKWISE))
+	end
   elseif (page_size.h > page_size.w and (rotation ~= Screen.DEVICE_ROTATED_UPRIGHT or rotation ~= Screen.DEVICE_ROTATED_UPSIDE_DOWN)) then
     logger.dbg("[AutoRotate] Rotating upright")
     UIManager:broadcastEvent(Event:new("SetRotationMode", last_portrait))
